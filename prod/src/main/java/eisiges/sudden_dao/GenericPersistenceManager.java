@@ -103,6 +103,7 @@ public class GenericPersistenceManager<T, K> {
 	 */
 	public void remove(T data){
 		em.remove(em.merge(data));
+		em.flush();
 	}
 	/**
 	 * Save a collection of objects to the database
