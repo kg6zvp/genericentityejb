@@ -2,11 +2,13 @@ package eisiges.find;
 
 import eisiges.sudden_dao.GenerateDAO;
 import java.util.Calendar;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -17,7 +19,7 @@ import lombok.ToString;
 
 @Entity
 @Builder
-@GenerateDAO
+@GenerateDAO(annotations = ApplicationScoped.class)
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"birthDate"})

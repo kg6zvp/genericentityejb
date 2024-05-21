@@ -1,18 +1,18 @@
 package eisiges.crud;
 
-import io.thorntail.test.ThorntailTestRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import io.quarkus.test.junit.QuarkusTest;
 
 import java.util.Calendar;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
-import static org.junit.Assert.*;
-import org.junit.Before;
 
-@RunWith(ThorntailTestRunner.class)
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+@QuarkusTest
 public class CrudTest {
 	@Inject
 	UserGEM users;
@@ -20,7 +20,7 @@ public class CrudTest {
 	@PersistenceContext
 	EntityManager em;
 
-	@Before
+	@BeforeEach
 	@Transactional
 	public void beforeEach() {
 		em.createQuery("DELETE FROM UserModel").executeUpdate();

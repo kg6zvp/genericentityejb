@@ -1,25 +1,45 @@
 package eisiges.sudden_dao;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.SingularAttribute;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.metamodel.SingularAttribute;
 
 /**
- * A class building a find query
+ * A class for building a simple find query
  * @author kg6zvp
  * @param <T> The type of Entity being found
  */
 public class FindBuilder<T> {
+	/**
+	 * {@link jakarta.persistence.Entity} class that will be used as both the query root and query result
+	 */
 	protected Class<T> cArg;
+	/**
+	 * {@link EntityManager} for query
+	 */
 	protected EntityManager em;
 
+	/**
+	 * criteria builder
+	 */
 	protected CriteriaBuilder criteriaBuilder;
+	/**
+	 * criteria query
+	 */
 	protected CriteriaQuery<T> criteriaQuery;
+	/**
+	 * Relational query root
+	 */
 	protected Root<T> queryRoot;
 
+	/**
+	 * Default constructor which will be used by genereated subclasses
+	 * @param cArg {@link jakarta.persistence.Entity} class
+	 * @param em {@link EntityManager} for given entity class
+	 */
 	protected FindBuilder(Class<T> cArg, EntityManager em) {
 		this.cArg = cArg;
 		this.em = em;

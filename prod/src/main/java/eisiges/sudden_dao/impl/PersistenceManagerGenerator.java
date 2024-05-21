@@ -10,18 +10,15 @@ import com.squareup.javapoet.TypeSpec;
 
 import eisiges.sudden_dao.GenerateDAO;
 import eisiges.sudden_dao.GenericPersistenceManager;
+import jakarta.annotation.Generated;
+
 import static eisiges.sudden_dao.impl.AnnotationProcessingUtils.*;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 import java.util.Set;
-import javax.annotation.Generated;
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.Processor;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedOptions;
+import javax.annotation.processing.*;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
@@ -38,18 +35,34 @@ import javax.tools.FileObject;
 })
 @SupportedOptions({})
 @AutoService(Processor.class)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class PersistenceManagerGenerator extends AbstractProcessor {
-
+	/**
+	 * Default suffix to append to all generated DAO classes
+	 */
 	public static final String DAO_NAME_SUFFIX = "DAO";
 
+	/**
+	 * Annotation {@link ProcessingEnvironment}
+	 */
 	ProcessingEnvironment pe;
 
+	/**
+	 * Annotation processor callback
+	 * @param pe {@link ProcessingEnvironment}
+	 */
 	@Override
 	public synchronized void init(ProcessingEnvironment pe) {
 		super.init(pe);
 		this.pe = pe;
 	}
 
+	/**
+	 * Annotation processor callback
+	 * @param annotations {@link Set}
+	 * @param roundEnvironment {@link RoundEnvironment}
+	 * @return true or false
+	 */
 	@Override
 	public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnvironment) {
 		if (annotations.size() <= 0 || roundEnvironment.processingOver()) {
@@ -111,7 +124,7 @@ public class PersistenceManagerGenerator extends AbstractProcessor {
 		
 		AnnotationValue customDaoAnnotations = getAnnotationValue(daoAnnotation, "annotations");
 		if(customDaoAnnotations == null) {
-			daoBuilder.addAnnotation(ClassName.get("javax.ejb", "Stateless"));
+			daoBuilder.addAnnotation(ClassName.get("jakarta.enterprise.context", "ApplicationScoped"));
 		} else {
 			@SuppressWarnings("unchecked") // it will always be a list because of the API being used
 			List<Object> listDaoAnnotations = (List<Object>)customDaoAnnotations.getValue();

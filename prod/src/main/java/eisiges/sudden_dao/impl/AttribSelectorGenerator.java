@@ -22,15 +22,33 @@ import java.util.List;
  * @author kg6zvp
  */
 public class AttribSelectorGenerator {
+	/**
+	 * suffix for generated interface names
+	 */
 	public static final String ATTR_SELECTOR_SUFFIX = "AttribSelector";
+	/**
+	 * type param variable name for generated interfaces
+	 */
 	public static final TypeVariableName TYPE_PARAM = TypeVariableName.get("T");
 
+	/**
+	 * processing environment {@link ProcessingEnvironment} for code generation
+	 */
 	ProcessingEnvironment pe;
 
+	/**
+	 * default constructor
+	 * @param pe {@link ProcessingEnvironment}
+	 */
 	public AttribSelectorGenerator(ProcessingEnvironment pe) {
 		this.pe = pe;
 	}
 
+	/**
+	 * TODO
+	 * @param k TODO
+	 * @return TODO
+	 */
 	public TypeSpec generateInterface(Element k) {
 		List<MethodSpec> selectorMethods = new LinkedList<>();
 

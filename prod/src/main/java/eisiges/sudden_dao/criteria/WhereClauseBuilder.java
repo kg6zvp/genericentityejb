@@ -1,15 +1,21 @@
 package eisiges.sudden_dao.criteria;
 
-import javax.persistence.criteria.Expression;
-import javax.persistence.metamodel.SingularAttribute;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.metamodel.SingularAttribute;
 
 /**
+ * Where clause builder for queries
  * @author kg6zvp
  */
 public class WhereClauseBuilder<T, Y extends Comparable<? super Y>> implements ClauseBuilder<T, Y> {
 	final FindBuilder<T> ref;
 	SingularAttribute<? super T, Y> attr;
 
+	/**
+	 * default constructor for where clause builder
+	 * @param reference {@link FindBuilder}
+	 * @param attr {@link SingularAttribute}
+	 */
 	public WhereClauseBuilder(final FindBuilder<T> reference, SingularAttribute<? super T, Y> attr) {
 		this.ref = reference;
 		this.attr = attr;

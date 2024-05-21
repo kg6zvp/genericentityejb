@@ -8,15 +8,15 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map.Entry;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeMirror;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import javax.tools.FileObject;
 
 import com.squareup.javapoet.AnnotationSpec;

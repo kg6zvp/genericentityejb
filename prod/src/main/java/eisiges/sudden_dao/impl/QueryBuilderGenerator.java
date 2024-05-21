@@ -9,7 +9,17 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
+/**
+ * Annotation processor for generating a QueryBuilder
+ * @author kg6zvp
+ */
 public class QueryBuilderGenerator {
+	/**
+	 * factory method for generating the query builder code
+	 * @param pe {@link ProcessingEnvironment}
+	 * @param k {@link Element}
+	 * @return {@link TypeSpec}
+	 */
 	public static TypeSpec generateBuilder(ProcessingEnvironment pe, Element k) {
 		String finderName = k.getSimpleName() + "QueryBuilder";
 		

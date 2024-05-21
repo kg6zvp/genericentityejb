@@ -1,22 +1,21 @@
 package eisiges.generator;
 
-import io.thorntail.test.ThorntailTestRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import io.quarkus.test.junit.QuarkusTest;
 
 import java.util.Calendar;
 
-import javax.annotation.Generated;
-import javax.ejb.Stateless;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
-import static org.junit.Assert.*;
-import org.junit.Before;
+import jakarta.annotation.Generated;
+import jakarta.ejb.Stateless;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-@RunWith(ThorntailTestRunner.class)
+@QuarkusTest
 public class GeneratorTest {
 	@Inject
 	UserModelDAO users;
@@ -27,17 +26,19 @@ public class GeneratorTest {
 	@PersistenceContext
 	EntityManager em;
 
-	@Before
+	@BeforeEach
 	@Transactional
 	public void beforeEach() {
 		em.createQuery("DELETE FROM UserModel").executeUpdate();
 		em.createQuery("DELETE FROM UngeneratedModel").executeUpdate();
 	}
 
-	@Test(expected = ClassNotFoundException.class)
+	@Test
 	public void testGenerationDisabled() throws ClassNotFoundException {
-		String ungeneratedClassFullyQualified = "eisiges.generator.UngeneratedModel";
-		GeneratorTest.class.getClassLoader().loadClass(ungeneratedClassFullyQualified + "DAO");
+		assertThrows(ClassNotFoundException.class, () -> {
+			String ungeneratedClassFullyQualified = "eisiges.generator.UngeneratedModel";
+			GeneratorTest.class.getClassLoader().loadClass(ungeneratedClassFullyQualified + "DAO");
+		});
 	}
 
 	@Test
@@ -56,17 +57,17 @@ public class GeneratorTest {
 
 	@Test
 	public void testHasCustomAnnotations() {
-		assertNotNull("UserModelDAO should have @ApplicationScoped annotation", UserModelDAO.class.getAnnotation(ApplicationScoped.class));
-		assertNotNull("UserModelDAO should have @Deprecated annotation", UserModelDAO.class.getAnnotation(Deprecated.class));
+		assertNotNull(UserModelDAO.class.getAnnotation(ApplicationScoped.class), "UserModelDAO should have @ApplicationScoped annotation");
+		assertNotNull(UserModelDAO.class.getAnnotation(Deprecated.class), "UserModelDAO should have @Deprecated annotation");
 
-		assertNull("UserModelDAO should not have default @Stateless annotation", UserModelDAO.class.getAnnotation(Stateless.class));
+		assertNull(UserModelDAO.class.getAnnotation(Stateless.class), "UserModelDAO should not have default @Stateless annotation");
 	}
 
 	@Test
 	public void testHasDefaultStatelessAnnotation() {
-		assertNotNull("CustomEntityDAO should have default @Stateless annotation", CustomEntityDAO.class.getAnnotation(Stateless.class));
+		assertNotNull(CustomEntityDAO.class.getAnnotation(ApplicationScoped.class), "CustomEntityDAO should have default @ApplicationScoped annotation");
 		
-		assertNotNull("MyCustomDao should have default @Stateless annotation", MyCustomDao.class.getAnnotation(Stateless.class));
+		assertNotNull(MyCustomDao.class.getAnnotation(ApplicationScoped.class), "MyCustomDao should have default @ApplicationScoped annotation");
 	}
 
 	@Test

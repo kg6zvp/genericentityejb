@@ -7,22 +7,28 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 import eisiges.sudden_dao.FindBuilder;
+import jakarta.annotation.Generated;
+
 import javax.lang.model.element.Element;
 
 import static eisiges.sudden_dao.impl.AnnotationProcessingUtils.*;
 import java.io.IOException;
 import java.io.Writer;
-import javax.annotation.Generated;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import javax.tools.FileObject;
 
 /**
  * @author kg6zvp
  */
 public class FindBuilderGenerator {
-
+	/**
+	 * Factory method for generating a custom {@link FindBuilder}
+	 * @param pe {@link ProcessingEnvironment}
+	 * @param k {@link Element}
+	 * @return {@link TypeSpec}
+	 */
 	public static TypeSpec generateBuilder(ProcessingEnvironment pe, Element k) {
 		String finderName = k.getSimpleName() + "QueryBuilder";
 		String packageName = getPackageDeclaration(k);

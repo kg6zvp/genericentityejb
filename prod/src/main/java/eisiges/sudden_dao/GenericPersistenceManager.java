@@ -8,19 +8,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.Id;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Id;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 
 /**
  * Intended to be subclassed for use as a persistence manager. It contains all boilerplate code for a class used to manage persistent Entities.
  * 
  * Usage:
- *	Extend this persistence manager class and annotate your bean as {@link Local} and {@link Stateless}
+ *	Extend this persistence manager class and annotate your bean appropriately
  *	Create a default constructor with a single call to super(Class.class); where Class is the name of the {@link Entity} you wish to manage
  * @author Sam McCollum
  * 
@@ -28,17 +26,35 @@ import javax.persistence.TypedQuery;
  * @param <K> The type used for the Entity's {@link Id}
  */
 public class GenericPersistenceManager<T, K> {
+	/**
+	 * entity being managed by child class of {@link GenericPersistenceManager}
+	 */
 	protected Class<T> cArg;
+	/**
+	 * table name for queries
+	 */
 	protected String tableName;
-	
+
+	/**
+	 * {@link EntityManager} for queries
+	 */
 	@PersistenceContext
 	protected EntityManager em;
-	
+
+	/**
+	 * Constructor with custom table name
+	 * @param cArg Class of {@link Entity} type
+	 * @param tableName custom table name
+	 */
 	public GenericPersistenceManager(Class<T> cArg, String tableName){
 		this.cArg = cArg;
 		this.tableName = tableName;
 	}
-	
+
+	/**
+	 * Default constructor, no customized table name
+	 * @param cArg Class of {@link Entity} type
+	 */
 	public GenericPersistenceManager(Class<T> cArg){
 		this(cArg, cArg.getSimpleName());
 	}
@@ -64,7 +80,12 @@ public class GenericPersistenceManager<T, K> {
 		em.flush();
 		return data;
 	}
-	
+
+	/**
+	 * Get the value of the primary key of the given entity
+	 * @param data entity to retrieve primary key from
+	 * @return primary key {@link K}
+	 */
 	@SuppressWarnings("unchecked") // yes it's an unchecked cast, but we know what we're doing
 	public K getId(T data) {
 		return (K)em.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(data);
@@ -165,7 +186,11 @@ public class GenericPersistenceManager<T, K> {
 				member.setAccessible(true);
 				if(!member.getType().isPrimitive()){
 					Object val = member.get(keyObject);
-					if(val != null && !Modifier.isFinal(member.getModifiers()) && !Modifier.isStatic(member.getModifiers()) && !(val instanceof Collection))
+					if(val != null
+						&& !Modifier.isFinal(member.getModifiers())
+						&& !Modifier.isStatic(member.getModifiers())
+						&& !(val instanceof Collection)
+						&& !member.getName().startsWith("$"))
 						importantFields.put(member.getName(), val);
 				}
 			} catch (Exception e){
@@ -207,11 +232,22 @@ public class GenericPersistenceManager<T, K> {
 		}
 		return importantFields;
 	}
-	
-	public List<Object> getPropertyList(T keyObject){
+
+	/**
+	 * Retrieve a list of whichever first property in the given object isn't null from the database. Avoids the Criteria
+	 * API
+	 *
+	 * NOTE: to be replaced with criteria query
+	 * @param <P> type of non-null property to list
+	 * @param keyObject object containing non-null attribute to get name of for querying
+	 * @return list of objects of type given by property
+	 */
+	@SuppressWarnings("unchecked") // yes it's an unchecked cast, but we know what we're doing
+	@Deprecated(forRemoval = true)
+	public <P> List<P> getPropertyList(T keyObject){
 		List<Object> list = new LinkedList<>();
 		List<Field> importantFields = getNonNullFields(keyObject);
-		if(importantFields.size() > 0){
+		if(!importantFields.isEmpty()){
 			Field fiq = importantFields.get(0);
 			fiq.setAccessible(true);
 			for(T data : getAll()){
@@ -222,6 +258,6 @@ public class GenericPersistenceManager<T, K> {
 				}
 			}
 		}
-		return list;
+		return (List<P>)list;
 	}
 }
